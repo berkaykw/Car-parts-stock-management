@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol</title>
+    <link rel="stylesheet" href="styles/styles_register.css"> <!-- CSS dosyasına bağlanma -->
+</head>
+<body>
+    <div class="login-container">
+        <h2>Kayıt Ol</h2>
+        <form action="/register" method="POST">
+            <label for="Ad">Ad:</label>
+            <input type="text" id="Ad" name="Ad" required><br>
+
+            <label for="Soyad">Soyad:</label>
+            <input type="text" id="Soyad" name="Soyad" required><br>
+
+            <label for="Rol">Rol:</label>
+            <select id="Rol" name="Rol" required>
+                <option value="Yönetici">Yönetici</option>
+                <option value="Stok Sorumlusu">Stok Sorumlusu</option>
+                <option value="Teknisyen">Teknisyen</option>
+            </select><br>
+            
+
+            <label for="e_posta">E-posta:</label>
+            <input type="email" id="e_posta" name="e_posta" required><br>
+
+            <label for="Sifre">Şifre:</label>
+            <input type="password" id="Sifre" name="Sifre" required><br>
+
+            <button type="submit">Kayıt Ol</button>
+        </form>
+        <p>Zaten hesabınız var mı? <a href="/">Giriş Yap</a></p>
+    </div>
+</body>
+</html>

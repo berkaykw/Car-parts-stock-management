@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yönetici Sayfası</title>
+    <link rel="stylesheet" href="styles/styles_yonetici_dashboard.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2 style="color: rgb(157, 244, 69);">Yönetici Paneli</h2>
+        <ul>
+            <li><a href="#add-part">Yeni Parça Ekle</a></li>
+            <li><a href="#update-part">Parça Güncelle</a></li>
+            <li><a href="#delete-part">Parça Sil</a></li>
+            <li><a href="#update-role">Kullanıcı Yetkisi Düzenle</a></li>
+            <li><a href="#update-depo">Depo Kapasitesini Değiştir</a></li>
+            <li><a href="talep-goruntule.html">Talepleri Görüntüle</a></li>
+            <button id="logout-button" class="logout-button">Çıkış Yap</button>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="container">
+            <h1>Yönetici Paneli - Hoşgeldiniz</h1>
+        </div>
+
+        <!-- Yeni Parça Ekleme -->
+        <form action="/add-part" method="POST">
+            <div class="container" id="add-part">
+            <h1>Yeni Parça Ekleme</h1>
+            <label for="part-name">Parça Adı:</label>
+            <input type="text" id="part-name" name="partName" required><br>
+          
+            <label for="part-type">Parça Türü:</label>
+            <input type="text" id="part-type" name="partType" required><br>
+          
+            <label for="part-price">Parça Fiyatı:</label>
+            <input type="number" id="part-price" name="partPrice" required><br>
+          
+            <label for="part-stock">Stok Seviyesi:</label>
+            <input type="number" id="part-stock" name="partStock" required><br>
+              <!-- Depolar burada dinamik olarak listelenecek -->
+            </select><br>
+          
+            <button type="submit">Yeni Parça Ekle</button>
+
+            </div>   
+          </form>
+          
+          <div class="container">
+            <h1>Parça Güncelle</h1>
+            <form id="update-part" action="/update-part" method="POST">
+                <!-- Parça ID -->
+                <label for="part-id">Parça ID:</label>
+                <input type="text" id="part-id" name="partID" required><br>
+    
+                <!-- Parça Adı -->
+                <label for="part-name">Parça Adı:</label>
+                <input type="text" id="part-name" name="partName" required><br>
+    
+                <!-- Parça Türü -->
+                <label for="part-type">Parça Türü:</label>
+                <input type="text" id="part-type" name="partType" required><br>
+    
+                <!-- Parça Fiyatı -->
+                <label for="part-price">Fiyat:</label>
+                <input type="number" id="part-price" name="partPrice" required><br>
+    
+                <!-- Parça Stok Seviyesi -->
+                <label for="part-stock">Stok Seviyesi:</label>
+                <input type="number" id="part-stock" name="partStock" required><br>
+    
+                <!-- Güncelleme Butonu -->
+                <button type="submit">Parça Güncelle</button>
+            </form>
+        </div>
+        <div class="container">
+            <h1>Parça Silme</h1>
+            <!-- Parça silme formu -->
+            <form id="delete-part" action="/delete-part" method="POST">
+                <!-- Parça ID -->
+                <label for="part-id">Parça ID:</label>
+                <input type="text" id="part-id" name="partID" required><br>
+    
+                <!-- Silme Butonu -->
+                <button type="submit">Parça Sil</button>
+            </form>
+        </div>
+        <div class="container">
+            <h1>Kullanıcı Rolü Güncelle</h1>
+    
+            <!-- Kullanıcı rolü güncelleme formu -->
+            <form id="update-role" action="/update-role-part" method="POST">
+                <!-- Kullanıcı ID -->
+                <label for="kullanici-id">Kullanıcı ID:</label>
+                <input type="text" id="kullanici-id" name="kullaniciID" required><br>
+    
+                <!-- Yeni Rol -->
+                <label for="new-role">Yeni Rol:</label>
+                <select id="new-role" name="newRole" required>
+                    <option value="Yönetici">Yönetici</option>
+                    <option value="Teknisyen">Teknisyen</option>
+                    <option value="Stok Sorumlusu">Stok Sorumlusu</option>
+                </select><br>
+    
+                <!-- Güncelleme Butonu -->
+                <button type="submit">Rolü Güncelle</button>
+            </form>
+        </div>
+
+        <div class="container">
+            <h1>Depo Kapasitesi Güncelle</h1>
+    
+            <!-- Depo kapasitesi güncelleme formu -->
+            <form id="update-depo" action="/update-depo-part" method="POST">
+                <!-- Depo ID -->
+                <label for="depo-id">Depo ID:</label>
+                <input type="text" id="depo-id" name="depoID" required><br>
+    
+                <!-- Yeni Kapasite -->
+                <label for="new-capacity">Yeni Kapasite:</label>
+                <input type="number" id="new-capacity" name="newCapacity" required><br>
+    
+                <!-- Güncelleme Butonu -->
+                <button type="submit">Kapasiteyi Güncelle</button>
+            </form>
+            
+        </div>
+
+
+    <script>
+
+// Sayfa içinde smooth scroll (yumuşak kaydırma) özelliği
+document.querySelectorAll('.sidebar a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();  // Varsayılan davranışı engelle (sayfa yenilenmesin)
+        
+        // Eğer href '#id' formatında bir iç bağlantıysa
+        const targetId = this.getAttribute('href').substring(1); // href'deki id'yi al
+        const targetElement = document.getElementById(targetId);  // Hedef element
+        
+        if (targetElement) {
+            // Hedef element'e kaydırma işlemi yap
+            targetElement.scrollIntoView({
+                behavior: 'smooth',  // Yumuşak kaydırma
+                block: 'start'       // Kaydırma, hedefin başına olsun
+            });
+        } else {
+            // Eğer dış bir sayfaya yönlendirme yapılacaksa
+            const targetUrl = this.getAttribute('href'); // Dış sayfa linki
+            window.location.href = targetUrl;  // Sayfayı yönlendir
+        }
+    });
+});
+
+
+        
+              document.getElementById('logout-button').addEventListener('click', function() {
+            fetch('/logout', {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Çıkış başarılı, giriş sayfasına yönlendir
+                    window.location.href = '/';
+                } else {
+                    alert('Çıkış yaparken bir hata oluştu.');
+                }
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+                alert('Bir hata oluştu!');
+            });
+        });
+
+    </script>
+</body>
+</html>

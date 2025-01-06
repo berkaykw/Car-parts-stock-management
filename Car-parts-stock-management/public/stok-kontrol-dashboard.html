@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stok Kontrol Sayfası</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .logout-button {
+            background-color: #dc3545;
+            margin-top: 20px;
+            margin-left: 725px;
+            width: 400px;
+        }
+        .logout-button:hover {
+            background-color: #a71d2a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stok Kontrol Paneli</h1>
+        <h2>Parça Stok Güncelle</h2>
+        <form id="update-stock-form">
+            <!-- Parça ID -->
+            <label for="part-id">Parça ID:</label>
+            <input type="text" id="part-id" name="partID" placeholder="Parça ID" required>
+
+            <!-- Yeni Stok Seviyesi -->
+            <label for="new-stock">Yeni Stok Seviyesi:</label>
+            <input type="number" id="new-stock" name="newStock" placeholder="Yeni Stok Seviyesi" required>
+
+            <!-- Güncelleme Butonu -->
+            <button type="submit">Stok Güncelle</button>
+        </form>
+        <div class="container">
+             <button id="show-parts-btn">Parçaları Göster</button> <!-- Parçaları gösteren buton -->
+            <button id="hide-parts-btn" style="display: none;">Parçaları Gizle</button> <!-- Parçaları gizleyen buton -->
+            <h1 id="parts-heading" style="display: none;">Tüm Parçalar</h1> <!-- Tüm parçalar yazısı başlangıçta gizli -->
+            <table id="parts-table" style="display: none;"> <!-- Başlangıçta tablo gizli -->
+                <thead>
+                    <tr>
+                        <th>Parça ID</th>
+                        <th>Parça Adı</th>
+                        <th>Parça Türü</th>
+                        <th>Fiyat</th>
+                        <th>Stok Seviyesi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Parçalar burada dinamik olarak görüntülenecek -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+        <!-- Çıkış Butonu -->
+        <button id="logout-button" class="logout-button">Çıkış Yap</button>
+    </div>
+
+    <script>
+        document.getElementById('update-stock-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Sayfa yenilenmesini engeller
+
+            // Form verilerini al
+            const partID = document.getElementById('part-id').value;
+            const newStock = document.getElementById('new-stock').value;
+
+            // Fetch API ile backend'e gönder
+            fetch('/update-stock', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    partID: partID,
+                    newStock: newStock
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Stok başarıyla güncellendi!');
+                } else {
+                    alert('Hata: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+                alert('Bir hata oluştu!');
+            });
+        });
+
+        // Çıkış Butonuna Tıklama Olayı
+        document.getElementById('logout-button').addEventListener('click', function() {
+            fetch('/logout', {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Çıkış başarılı, giriş sayfasına yönlendir
+                    window.location.href = '/';
+                } else {
+                    alert('Çıkış yaparken bir hata oluştu.');
+                }
+            })
+            .catch(error => {
+                console.error('Hata:', error);
+                alert('Bir hata oluştu!');
+            });
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const showPartsButton = document.getElementById('show-parts-btn');
+            const hidePartsButton = document.getElementById('hide-parts-btn');
+            const partsTable = document.getElementById('parts-table');
+            const partsHeading = document.getElementById('parts-heading');  // "Tüm Parçalar" yazısı
+
+            // Parçaları gösteren buton
+            showPartsButton.addEventListener('click', function() {
+                fetch('/get-parts')
+                    .then(response => response.json())
+                    .then(parts => {
+                        const tableBody = partsTable.querySelector('tbody');
+                        tableBody.innerHTML = '';  // Mevcut içerikleri temizle
+
+                        // Parçaları tabloya ekle
+                        parts.forEach(part => {
+                            const row = document.createElement('tr');
+                            
+                            row.innerHTML = `
+                                <td>${part.ParcaID}</td>
+                                <td>${part.Ad}</td>
+                                <td>${part.Tur}</td>
+                                <td>${part.Fiyat}</td>
+                                <td>${part.StokSeviyesi}</td>
+                            `;
+                            
+                            tableBody.appendChild(row);  // Yeni satırı tabloya ekle
+                        });
+
+                        // Tabloyu görünür yap
+                        partsTable.style.display = 'table';
+                        // "Tüm Parçalar" yazısını göster
+                        partsHeading.style.display = 'block';
+                        // Gizleme butonunu görünür yap
+                        hidePartsButton.style.display = 'inline-block';
+                    })
+                    .catch(error => {
+                        console.error('Hata:', error);
+                        alert('Parçalar yüklenirken bir hata oluştu.');
+                    });
+            });
+
+            // Parçaları gizleyen buton
+            hidePartsButton.addEventListener('click', function() {
+                // Tabloyu gizle
+                partsTable.style.display = 'none';
+                // "Tüm Parçalar" yazısını gizle
+                partsHeading.style.display = 'none';
+                // Gizle butonunu tekrar gizle
+                hidePartsButton.style.display = 'none';
+            });
+        });
+
+
+    </script>
+</body>
+</html>

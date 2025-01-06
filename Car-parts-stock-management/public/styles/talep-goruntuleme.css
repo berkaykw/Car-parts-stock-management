@@ -1,0 +1,112 @@
+/* Genel stil ayarları */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Başlık üstte olsun */
+    height: 100vh;
+    flex-direction: column;
+}
+
+/* Başlık stilini ekleyelim */
+h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 20px; /* Başlık için üst boşluk */
+    font-size: 24px;
+}
+
+/* Tablo stili */
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin: 20px auto; /* Tabloyu ortalayalım */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+/* Tablo başlıkları */
+th {
+    background-color: #4CAF50;
+    color: white;
+    text-align: left;
+    padding: 12px;
+    font-size: 16px;
+}
+
+/* Tablo hücreleri */
+td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+/* Tabloyu hover ile interaktif hale getirelim */
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Tabloyu alt kenarına kadar hizalayalım */
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Mobil uyumluluk için responsive tablo */
+@media screen and (max-width: 768px) {
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+/* "Önceki Sayfaya Dön" butonunun stili */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Buton üzerine gelindiğinde renk değişikliği */
+.back-button:hover {
+    background-color: #45a049;
+}
+
+/* Buton stilleri */
+.action-button {
+    padding: 10px 15px;
+    font-size: 14px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.action-button.approve {
+    background-color: #4CAF50;
+}
+
+.action-button.reject {
+    background-color: #FF4C4C;
+}
+
+/* Butonlar hover efekti */
+.action-button:hover {
+    opacity: 0.9;
+}
+

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teknisyen Sayfası</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      width: 80%;
+      margin: 0 auto;
+    }
+    .button {
+      padding: 10px 20px;
+      margin: 10px 0;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .button:hover {
+      background-color: #0056b3;
+    }
+    .hidden {
+      display: none;
+    }
+    .logout-button {
+      background-color: #FF0000; /* Kırmızı renk */
+    }
+    .logout-button:hover {
+      background-color: #cc0000;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Teknisyen Sayfası , Hoşgeldiniz...</h1>
+
+    <!-- Çıkış Yap -->
+    <button class="button logout-button" id="logoutButton">Çıkış Yap</button>
+
+    <!-- Parçaları Görüntüle -->
+    <button class="button" id="showPartsButton">Parçaları Görüntüle</button>
+    <button class="button hidden" id="hidePartsButton">Gizle</button>
+    <div id="partsTable" class="hidden">
+      <h2>Tüm Parçalar</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Parça ID</th>
+            <th>Ad</th>
+            <th>Tür</th>
+            <th>Fiyat</th>
+            <th>Stok</th>
+          </tr>
+        </thead>
+        <tbody id="partsTableBody">
+          <!-- Dinamik içerik buraya yüklenecek -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Parça Talebi Oluştur -->
+    <h2>Parça Talebi Oluştur</h2>
+    <form id="requestForm">
+      <label for="partID">Parça ID:</label>
+      <input type="number" id="partID" name="partID" required>
+      <label for="quantity">Talep Edilen Miktar:</label>
+      <input type="number" id="quantity" name="quantity" required>
+      <button type="submit" class="button">Talep Oluştur</button>
+    </form>
+
+    <div id="responseMessage"></div>
+  </div>
+
+  <script>
+    // Çıkış Yapma İşlemi
+    const logoutButton = document.getElementById('logoutButton');
+
+    logoutButton.addEventListener('click', () => {
+      fetch('/api/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Çıkış işlemi başarılıysa, kullanıcıyı login sayfasına yönlendir
+            window.location.href = '/';
+          } else {
+            console.error('Çıkış yapılırken bir hata oluştu:', data.message);
+          }
+        })
+        .catch(err => console.error('Çıkış yaparken hata:', err));
+    });
+
+    // Parçaları Görüntüle ve Gizle
+    const showPartsButton = document.getElementById('showPartsButton');
+    const hidePartsButton = document.getElementById('hidePartsButton');
+    const partsTable = document.getElementById('partsTable');
+    const partsTableBody = document.getElementById('partsTableBody');
+
+    showPartsButton.addEventListener('click', () => {
+      fetch('/api/get-parts')
+        .then(response => response.json())
+        .then(data => {
+          partsTableBody.innerHTML = '';
+          data.forEach(part => {
+            const row = `<tr>
+              <td>${part.ParcaID}</td>
+              <td>${part.Ad}</td>
+              <td>${part.Tur}</td>
+              <td>${part.Fiyat}</td>
+              <td>${part.StokSeviyesi}</td>
+            </tr>`;
+            partsTableBody.innerHTML += row;
+          });
+          partsTable.classList.remove('hidden');
+          showPartsButton.classList.add('hidden');
+          hidePartsButton.classList.remove('hidden');
+        })
+        .catch(err => console.error('Error fetching parts:', err));
+    });
+
+    hidePartsButton.addEventListener('click', () => {
+      partsTable.classList.add('hidden');
+      showPartsButton.classList.remove('hidden');
+      hidePartsButton.classList.add('hidden');
+    });
+
+    // Parça Talebi Oluştur
+    const requestForm = document.getElementById('requestForm');
+    const responseMessage = document.getElementById('responseMessage');
+
+    requestForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const partID = document.getElementById('partID').value;
+      const quantity = document.getElementById('quantity').value;
+
+      fetch('/api/create-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ partID, quantity }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          responseMessage.textContent = data.message;
+          responseMessage.style.color = data.success ? 'green' : 'red';
+          requestForm.reset();
+        })
+        .catch(err => console.error('Error creating request:', err));
+    });
+  </script>
+</body>
+</html>
